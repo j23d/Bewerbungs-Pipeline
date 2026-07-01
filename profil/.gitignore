@@ -1,0 +1,9 @@
+# Zweite Verteidigungslinie (Datenschutz): alles in profil/ ignorieren,
+# nur Hinweis-/Strukturdateien erlauben. Greift auch, wenn die Root-.gitignore
+# fehlt oder ueberschrieben wird.
+*
+!.gitignore
+!nachweise/
+!**/HINWEIS.md
+!**/README.md
+!**/.gitkeep

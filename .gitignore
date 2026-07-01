@@ -1,0 +1,56 @@
+# =============================================================================
+#  DATENSCHUTZ / PII — restriktive Whitelist-Strategie
+#  Grundsatz: Alles unter profil/ und runs/ ist potenziell personenbezogen und
+#  wird pauschal ignoriert. Nur ausdruecklich unbedenkliche Struktur-/Hinweis-
+#  dateien werden mit "!"-Regeln WIEDER freigegeben. Neue Dateien in diesen
+#  Ordnern sind damit automatisch geschuetzt — auch in Zukunft.
+# =============================================================================
+
+# --- profil/: komplett ignorieren ... ---
+profil/**
+# ... aber Struktur-/Hinweisdateien erlauben (keine PII):
+!profil/
+!profil/nachweise/
+!profil/**/HINWEIS.md
+!profil/**/.gitkeep
+!profil/**/README.md
+
+# --- runs/: komplette Laeufe ignorieren (immer PII) ---
+runs/**
+!runs/
+!runs/.gitkeep
+
+# --- Zusaetzliche pauschale PII-/Dokument-Sperren im GESAMTEN Baum ---
+# (Vorlagen sind die einzige erlaubte Ausnahme, s. u.)
+*.docx
+*.doc
+*.pdf
+*.odt
+*.rtf
+*.xlsx
+*.xls
+*.csv
+*.pages
+# Bewerbungsfotos / eingescannte Zeugnisse
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tif
+*.tiff
+*.heic
+
+# --- Erlaubte Ausnahme: LEERE Layout-Vorlagen (nur Jinja-Platzhalter, keine PII) ---
+!vorlagen/
+!vorlagen/*.dotx
+!vorlagen/*.dotm
+
+# --- Lose Notiz-/Textdateien im Repo-Root sind oft PII (Kandidatennotizen etc.) ---
+# Doku laeuft ueber *.md; echte Projekt-Textdateien bei Bedarf gezielt mit "!" freigeben.
+/*.txt
+
+# --- Python ---
+__pycache__/
+*.pyc
+.venv/

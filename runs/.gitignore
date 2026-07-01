@@ -1,0 +1,5 @@
+# Zweite Verteidigungslinie (Datenschutz): jeder Lauf enthaelt personenbezogene
+# Daten -> komplett ignorieren. Greift auch ohne Root-.gitignore.
+*
+!.gitignore
+!.gitkeep

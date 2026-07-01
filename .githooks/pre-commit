@@ -1,0 +1,43 @@
+#!/bin/sh
+# =============================================================================
+#  PII-WAECHTER (pre-commit) — aktive Sperre gegen personenbezogene Daten.
+#  Blockiert den Commit, wenn STAGED Dateien in profil/ (ausser Hinweisdateien),
+#  in runs/ oder mit typischen Dokument-/Bild-Endungen enthalten sind.
+#  Faengt auch 'git add -f' ab, das .gitignore umgeht.
+# =============================================================================
+
+# Nur bereits gestagte Dateien pruefen.
+staged=$(git diff --cached --name-only --diff-filter=ACM)
+[ -z "$staged" ] && exit 0
+
+verstoss=""
+while IFS= read -r f; do
+  case "$f" in
+    # Erlaubte, unbedenkliche Struktur-/Hinweisdateien (keine PII):
+    profil/.gitignore|runs/.gitignore|\
+    profil/nachweise/HINWEIS.md|profil/*/HINWEIS.md|profil/HINWEIS.md|\
+    profil/*/README.md|profil/README.md|\
+    .gitkeep|*/.gitkeep) : ;;
+    # Alles andere in profil/ oder runs/ ist tabu:
+    profil/*|runs/*) verstoss="$verstoss\n  $f" ;;
+    # Erlaubte Ausnahme: leere Layout-Vorlagen:
+    vorlagen/*.dotx|vorlagen/*.dotm) : ;;
+    # Dokument-/Bild-/Tabellenformate ueberall im Baum:
+    *.docx|*.doc|*.pdf|*.odt|*.rtf|*.xlsx|*.xls|*.csv|*.pages|\
+    *.jpg|*.jpeg|*.png|*.gif|*.bmp|*.tif|*.tiff|*.heic) verstoss="$verstoss\n  $f" ;;
+  esac
+done <<EOF
+$staged
+EOF
+
+if [ -n "$verstoss" ]; then
+  printf "\n\033[31mCOMMIT BLOCKIERT — moegliche personenbezogene Daten (PII):\033[0m"
+  printf "$verstoss\n"
+  printf "\nDiese Dateien duerfen nicht ins Repository. Entferne sie aus dem Commit:\n"
+  printf "  git restore --staged <datei>\n"
+  printf "Wenn eine Datei WIRKLICH unbedenklich ist, gezielt in .gitignore mit '!' freigeben\n"
+  printf "und den Hook-Ausnahmen ergaenzen. Notfall-Umgehung (nur bewusst!): git commit --no-verify\n\n"
+  exit 1
+fi
+
+exit 0
