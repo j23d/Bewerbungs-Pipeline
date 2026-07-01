@@ -45,6 +45,25 @@ runs/<datum>-<firma>/         Arbeitsverzeichnis pro Lauf (Zwischenstände + fin
   settings.json               Hook-Konfiguration
 ```
 
+## Datenschutz (PII bleibt lokal)
+Personenbezogene Daten dürfen **nicht** ins Repository gelangen. Dafür gibt es drei
+Verteidigungslinien:
+1. **`.gitignore`** (restriktive Whitelist): `profil/**` und `runs/**` werden pauschal
+   ignoriert; nur Struktur-/Hinweisdateien und die leeren `vorlagen/*.dotx` sind
+   freigegeben. Dokument-/Bildformate (`*.docx`, `*.pdf`, `*.jpg`, `*.csv`, …) sind
+   baumweit gesperrt. Zusätzlich lokale `.gitignore` in `profil/` und `runs/`.
+2. **`.githooks/pre-commit`** (aktiver Wächter): blockiert jeden Commit, der
+   PII-verdächtige Dateien enthält — **auch** bei `git add -f`. Aktiv über
+   `git config core.hooksPath .githooks` (bei frischem Clone einmalig setzen).
+3. **`.gitattributes`**: behandelt Office-Dateien als Binär (kein versehentliches
+   Diffen von Inhalten).
+
+**Nach einem frischen `git clone` einmalig ausführen:**
+```
+git config core.hooksPath .githooks
+```
+Notfall-Umgehung des Hooks nur bewusst mit `git commit --no-verify`.
+
 ## Voraussetzungen
 Python mit `python-docx` und `docxtpl` (bereits installiert). Vor dem ersten Lauf
 `profil/lebenslauf.docx` mit echten Fakten füllen und Nachweise in

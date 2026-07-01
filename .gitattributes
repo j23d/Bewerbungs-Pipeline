@@ -1,0 +1,15 @@
+# Textdateien mit konsistentem Zeilenende, UTF-8 bleibt erhalten.
+* text=auto eol=lf
+
+# Office-/Binaerformate niemals als Text behandeln (kein Diff/Merge, keine EOL-Konvertierung).
+*.docx  binary
+*.doc   binary
+*.dotx  binary
+*.dotm  binary
+*.pdf   binary
+*.xlsx  binary
+*.xls   binary
+*.odt   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
