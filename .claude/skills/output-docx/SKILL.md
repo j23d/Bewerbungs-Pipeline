@@ -40,3 +40,10 @@ Passe den Kontextaufbau bei Bedarf an die konkrete Struktur von `04_entwurf.md` 
 ## Abschluss
 Melde dem Menschen die Pfade der erzeugten Dateien und einen kurzen Hinweis, die
 DOCX in Word/LibreOffice final zu prüfen.
+
+## Danach: Stufe 5b (ATS-Check)
+Nach dem Rendering läuft der ATS-Simulator (Skill `ats-check`) über die eben
+erzeugten DOCX und misst die Keyword-Abdeckung/Parsing-Tauglichkeit. Halte die
+Vorlagen daher ATS-freundlich: einspaltig, Standard-Überschriften
+(„Berufserfahrung", „Ausbildung", „Kenntnisse"), Kontaktdaten im Fließtext,
+keine kritischen Inhalte in Tabellen/Kopfzeilen/Textboxen.

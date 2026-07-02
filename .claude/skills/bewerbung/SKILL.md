@@ -49,21 +49,34 @@ Persistiere nach **jeder** Stufe den Zwischenstand als Datei.
   Bericht an den Menschen (welche Findings blieben offen, Empfehlung).
 - Bei `bestanden: true`: weiter zum Human-in-the-Loop.
 
-### Human-in-the-Loop (vor Stufe 6)
+### Human-in-the-Loop (Inhalts-Freigabe, vor Stufe 6)
 - Lege dem Menschen die Entwürfe (`04_entwurf.md`) und den QA-Bericht
   (`05_qa.json`, ats_score) zur **Prüfung/Freigabe/Änderung** vor.
 - **Warte** auf explizite Freigabe. Bei Änderungswunsch: zurück zu Stufe 4.
 - Kein finaler Output ohne Freigabe (wird zusätzlich durch den Hook erzwungen).
 
-### Stufe 6 (nach Freigabe)
+### Stufe 6 (nach Inhalts-Freigabe)
 - **Output** (Skill `output-docx`) → rendert `04_entwurf.md` in die Vorlagen und
   schreibt `anschreiben_<firma>.docx` und `lebenslauf_<firma>.docx` ins
   Run-Verzeichnis.
+
+### Stufe 5b: ATS-Check (nach Stufe 6, Warnung-und-Freigabe)
+- **ATS-Simulator** (Skill `ats-check`) → liest die eben gerenderten DOCX zurück
+  und schreibt `05b_ats.json` + `ats_extrakt.txt`.
+- Dies ist **kein hartes Gate**: Liegt der gemessene Score unter der Schwelle
+  oder gibt es Parsing-Warnungen, lege beides dem Menschen **deutlich** vor.
+  - Bei Parsing-Warnungen (Tabellen/Kopfzeilen/Textboxen etc.): Empfehlung,
+    `vorlagen/` zu korrigieren und Stufe 6 neu zu rendern.
+  - Bei belegbaren Keyword-Lücken: optional zurück zu Stufe 4 (nur belegtes
+    Vokabular angleichen, nichts erfinden).
+  - Der Mensch kann die Warnung **bewusst übersteuern** und die Unterlagen so
+    belassen. Die endgültige Entscheidung liegt bei ihm.
 
 ## Zustandsdateien im Run-Verzeichnis
 ```
 stellenanzeige.txt   01_analyse.md   02_abgleich.md   03_dialog.md
 04_entwurf.md        05_qa.json      freigabe.txt (nach Freigabe)
 anschreiben_<firma>.docx   lebenslauf_<firma>.docx
+05b_ats.json   ats_extrakt.txt   (ATS-Check, nach Rendering)
 ```
 `freigabe.txt` enthält den Freigabe-Vermerk des Menschen (dient dem Hook als Nachweis).

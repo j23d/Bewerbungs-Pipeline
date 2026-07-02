@@ -48,6 +48,9 @@ anderen Zielen (auch über ATS-Score oder Vollständigkeit).
 5. **Qualitätsprüfung** → `05_qa.json`
    (durch separaten, isolierten Subagenten `qa-reviewer`)
 6. **Output DOCX** → finale Dateien im Run-Verzeichnis
+5b. **ATS-Check** → `05b_ats.json` + `ats_extrakt.txt`
+   (ATS-Simulator; läuft **nach** Stufe 6, weil er die fertigen DOCX zurückliest;
+   misst überprüfbar die Keyword-Abdeckung und meldet Parsing-Probleme)
 
 ## Kontrollfluss
 - **Rücksprung-Schleife 5→4:** Fällt die QA durch (`bestanden: false`), geht es
@@ -59,3 +62,9 @@ anderen Zielen (auch über ATS-Score oder Vollständigkeit).
 - **Human-in-the-Loop:** Nach bestandener QA hält der Orchestrator an und legt die
   Entwürfe zur Prüfung/Freigabe/Änderung vor. Ohne ausdrückliche Freigabe läuft
   Stufe 6 nicht. Ein Quality-Gate-Hook erzwingt dies zusätzlich technisch.
+- **ATS-Check (Stufe 5b, Warnung-und-Freigabe):** Nach dem Rendering prüft der
+  ATS-Simulator die fertigen DOCX und misst die Keyword-Abdeckung. Dies ist **kein
+  hartes Gate** – ein Score unter Schwelle oder Parsing-Warnungen führen zu einer
+  deutlichen Warnung, die der Mensch bewusst übersteuern kann. ATS-Optimierung
+  bedeutet ausschließlich, Wahres maschinenlesbar/relevant darzustellen, niemals
+  Täuschung (kein versteckter Text, keine erfundenen Keywords).

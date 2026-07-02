@@ -21,10 +21,24 @@ Die Pipeline legt automatisch ein Run-Verzeichnis an und führt dich durch die S
 4. **Erstellung** → Anschreiben + Lebenslauf-Inhalt (keyword-orientiert, faktentreu)
 5. **QA** (isolierter Subagent `qa-reviewer`) → ATS, Ton, Vollständigkeit, Halluzinations-Check
 6. **Output DOCX** → finale Dateien in die Vorlagen gerendert
+5b. **ATS-Check** (Simulator) → liest die fertigen DOCX zurück, **misst** die
+   Keyword-Abdeckung gegen die Must-haves und meldet Parsing-Probleme
 
 - **Rücksprung 5→4** bei durchgefallener QA (max. 3 Iterationen).
 - **Quality-Gate-Hook** verhindert finalen Output ohne bestandene QA + Freigabe.
 - **Human-in-the-Loop:** finaler Output erst nach deiner ausdrücklichen Freigabe.
+- **ATS-Check (5b): Warnung-und-Freigabe** – kein hartes Gate; ein niedriger
+  gemessener Score oder Parsing-Warnungen werden dir vorgelegt, du entscheidest.
+
+### Warum die KI-Vorauswahl überwinden?
+Viele Bewerbungen scheitern schon an der maschinellen Vorauswahl (ATS), bevor ein
+Mensch sie sieht. Ursache ist meist **Format** (Parsing zerlegt zweispaltige
+Layouts, Kopfzeilen, Textboxen falsch), nicht fehlende Qualifikation. Stufe 5b
+simuliert dieses Parsen: Sie liest die fertige DOCX so zurück, wie ein ATS es tut,
+und liefert einen **gemessenen** statt geschätzten Score plus konkrete
+Format-Warnungen. `ats_extrakt.txt` zeigt, was das ATS tatsächlich „sieht".
+**Grenze:** Optimiert wird nur die Darstellung wahrer Fakten – keine versteckten
+Keywords, kein weißer Text (fliegt bei modernen Rankern/HR auf).
 
 ## Struktur
 ```
@@ -41,7 +55,7 @@ runs/<datum>-<firma>/         Arbeitsverzeichnis pro Lauf (Zwischenstände + fin
   skills/                     je Pipeline-Stufe ein Skill (+ Orchestrator 'bewerbung')
   agents/qa-reviewer.md       QA-Subagent (Stufe 5)
   hooks/quality_gate.py       Quality-Gate + Freigabe-Prüfung
-  scripts/                    Hilfsskripte (Rückschreiben, DOCX-Rendering)
+  scripts/                    Hilfsskripte (Rückschreiben, DOCX-Rendering, ATS-Check)
   settings.json               Hook-Konfiguration
 ```
 
